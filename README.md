@@ -5,4 +5,4 @@ This guide can be used as a course with each week having 2-3 lessons and a proje
 
 This guide was created on Databricks for a Data Science team training. The SQL and Spark segments would as is on a Databricks environment but might need some modification if used in a different enviornment. All other segments should run perfectly on any Python Notebooks enviornment such as Jupyter.
 
-The Cariculum can be found in the 'Content.inpy' noteebok.
+The Cariculum can be found in the 'Content.ipynb' noteebok.
