@@ -5,7 +5,16 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Week 1: Data Toolbox (Fundaments, Pandas, SQL)
+# MAGIC ### Week 1: Python Data Fundamentals
+# MAGIC 
+# MAGIC Made for Jupyter or Kaggle Notebooks
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Week 2: Data Toolbox (Fundaments, Pandas, SQL)
+# MAGIC 
+# MAGIC Made for Databricks Notebooks
 
 # COMMAND ----------
 
@@ -39,12 +48,16 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Week 2: Data Application (Manipulate & Visualize Data)
+# MAGIC ### Week 3: Data Application (Manipulate & Visualize Data)
+# MAGIC 
+# MAGIC Made for Databricks Notebooks
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Week 3: Further Data Application (Manipulate using Spark & Visualize Maps)
+# MAGIC ### Week 4: Further Data Application (Manipulate using Spark & Visualize Maps)
+# MAGIC 
+# MAGIC Made for Databricks Notebooks
 
 # COMMAND ----------
 
