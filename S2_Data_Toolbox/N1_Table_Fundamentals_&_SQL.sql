@@ -4,10 +4,10 @@
 -- MAGIC 
 -- MAGIC Version History:
 -- MAGIC 
--- MAGIC **Version 1.1** <br>
+-- MAGIC **Version 1.1** 
 -- MAGIC -Added dataset description
 -- MAGIC 
--- MAGIC **Version 1.0** <br>
+-- MAGIC **Version 1.0** 
 -- MAGIC -First version ready end to end
 
 -- COMMAND ----------
@@ -15,38 +15,36 @@
 -- MAGIC %md
 -- MAGIC #### TODO:
 -- MAGIC 
--- MAGIC 1. **Some Command Line & File Structure Basics** <br>
--- MAGIC   a. Command Line basics <br>
--- MAGIC   b. Create a folder to upload CSV file <br>
--- MAGIC   c. [Extra] Set up connection to and read files from Blob Storage <br>
--- MAGIC   
--- MAGIC 2. **Babies First SQL Table** <br>
--- MAGIC a. Creating a Table from a CSV File <br>
--- MAGIC b. Reading a Table <br>
--- MAGIC c. Reading a Table with Filters <br>
+-- MAGIC 1. **Some Command Line & File Structure Basics**  
+-- MAGIC a. Command Line basics  
+-- MAGIC b. Create a folder to upload CSV file  
+-- MAGIC c. [Extra] Set up connection to and read files from Blob Storage  
 -- MAGIC 
--- MAGIC 3. **More Things to Do with Tables** <br>
--- MAGIC a. Apply basic transformation on table (Change all letters in column values to uppercase) <br>
--- MAGIC b. Merge two columns into one column <br>
--- MAGIC c. Filter table based on multiple conditions <br>
--- MAGIC d. Sort table <br>
--- MAGIC  
--- MAGIC 4. **Groupby and why you will be doing this a lot** <br>
--- MAGIC a. Basics of groupby and aggregation and why is it so useful <br>
--- MAGIC b. Aggregate by Mean and Sum <br>
--- MAGIC c. Aggregate using more than one column <br>
+-- MAGIC 2. **Babies First SQL Table**
+-- MAGIC a. Creating a Table from a CSV File  
+-- MAGIC b. Reading a Table  
+-- MAGIC c. Reading a Table with Filters  
 -- MAGIC 
--- MAGIC 5. **Merging Tables** <br>
--- MAGIC a. Kinds if merges and when you want to use them <br>
--- MAGIC b. Union two tables (Up and Down) <br>
--- MAGIC c. Join two tables (Left and Right) <br>
--- MAGIC d. Kinds of Joins
+-- MAGIC 3. **More Things to Do with Tables**
+-- MAGIC a. Apply basic transformation on table (Change all letters in column values to uppercase)  
+-- MAGIC b. Merge two columns into one column  
+-- MAGIC c. Filter table based on multiple conditions  
+-- MAGIC d. Sort table  
 -- MAGIC 
--- MAGIC 6. **Other Cool Things** <br>
--- MAGIC a. Dropping Tables and Databases <br>
--- MAGIC b. ... <br>
--- MAGIC c. ... <br>
--- MAGIC d. ... <br>
+-- MAGIC 4. **Groupby and why you will be doing this a lot** 
+-- MAGIC a. Basics of groupby and aggregation and why is it so useful  
+-- MAGIC b. Aggregate by Mean and Sum  
+-- MAGIC c. Aggregate using more than one column  
+-- MAGIC 
+-- MAGIC 5. **Merging Tables** 
+-- MAGIC a. Kinds if merges and when you want to use them  
+-- MAGIC b. Union two tables (Up and Down)  
+-- MAGIC c. Join two tables (Left and Right)   
+-- MAGIC d. Kinds of Joins  
+-- MAGIC 
+-- MAGIC 6. **Other Cool Things** 
+-- MAGIC a. Dropping Tables and Databases  
+-- MAGIC b. ...  
 
 -- COMMAND ----------
 
@@ -54,7 +52,7 @@
 -- MAGIC 
 -- MAGIC ### Dataset Background
 -- MAGIC 
--- MAGIC This open dataset was accuired from the following Dubai Government Open Data portal: <br>
+-- MAGIC This open dataset was accuired from the following Dubai Government Open Data portal: 
 -- MAGIC https://www.dubaipulse.gov.ae/data/dubai-airports-flight-info/da_flight_information_arrivals-open
 -- MAGIC 
 -- MAGIC The dataset structure is Time-series of flight arrivals with mostly categorical attributes like flight status, airline, origin airport, etc. The only numeric column is baggage claim count which can be used to estimate the number of passengers.
@@ -110,7 +108,8 @@
 -- MAGIC ##### Manual File Upload
 -- MAGIC Now let's upload our CSV file to our created folder using the UI. 
 -- MAGIC 
--- MAGIC Click on `File`, then `Upload Data` to upload the CSV.
+-- MAGIC Click on `File`, then `Upload Data` to upload the CSV.  
+-- MAGIC Make sure to upload it in the folder you created
 
 -- COMMAND ----------
 
