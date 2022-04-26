@@ -15,34 +15,34 @@
 -- MAGIC %md
 -- MAGIC #### TODO:
 -- MAGIC 
--- MAGIC 0. **Some Command Line & File Structure Basics** <br>
+-- MAGIC 1. **Some Command Line & File Structure Basics** <br>
 -- MAGIC   a. Command Line basics <br>
 -- MAGIC   b. Create a folder to upload CSV file <br>
 -- MAGIC   c. [Extra] Set up connection to and read files from Blob Storage <br>
 -- MAGIC   
--- MAGIC 1. **Babies First SQL Table** <br>
+-- MAGIC 2. **Babies First SQL Table** <br>
 -- MAGIC a. Creating a Table from a CSV File <br>
 -- MAGIC b. Reading a Table <br>
 -- MAGIC c. Reading a Table with Filters <br>
 -- MAGIC 
--- MAGIC 2. **More Things to Do with Tables** <br>
+-- MAGIC 3. **More Things to Do with Tables** <br>
 -- MAGIC a. Apply basic transformation on table (Change all letters in column values to uppercase) <br>
 -- MAGIC b. Merge two columns into one column <br>
 -- MAGIC c. Filter table based on multiple conditions <br>
 -- MAGIC d. Sort table <br>
--- MAGIC 
--- MAGIC 3. **Groupby and why you will be doing this a lot** <br>
+-- MAGIC  
+-- MAGIC 4. **Groupby and why you will be doing this a lot** <br>
 -- MAGIC a. Basics of groupby and aggregation and why is it so useful <br>
 -- MAGIC b. Aggregate by Mean and Sum <br>
 -- MAGIC c. Aggregate using more than one column <br>
 -- MAGIC 
--- MAGIC 4. **Merging Tables** <br>
+-- MAGIC 5. **Merging Tables** <br>
 -- MAGIC a. Kinds if merges and when you want to use them <br>
 -- MAGIC b. Union two tables (Up and Down) <br>
 -- MAGIC c. Join two tables (Left and Right) <br>
 -- MAGIC d. Kinds of Joins
 -- MAGIC 
--- MAGIC 5. **Other Cool Things** <br>
+-- MAGIC 6. **Other Cool Things** <br>
 -- MAGIC a. Dropping Tables and Databases <br>
 -- MAGIC b. ... <br>
 -- MAGIC c. ... <br>
@@ -86,7 +86,7 @@
 -- COMMAND ----------
 
 -- MAGIC %sh
--- MAGIC cd ../../dbfs/FileStore
+-- MAGIC cd /dbfs/FileStore
 -- MAGIC ls
 
 -- COMMAND ----------
@@ -98,14 +98,23 @@
 
 -- MAGIC %sh
 -- MAGIC mkdir /dbfs/FileStore/abdulaziza_files
--- MAGIC cd /dbfs/FileStore/abdulaziza_files
--- MAGIC ls
+
+-- COMMAND ----------
+
+-- MAGIC %sh
+-- MAGIC ls /dbfs/FileStore
 
 -- COMMAND ----------
 
 -- MAGIC %md
+-- MAGIC ##### Manual File Upload
 -- MAGIC Now let's upload our CSV file to our created folder using the UI. 
 -- MAGIC 
+-- MAGIC Click on `File`, then `Upload Data` to upload the CSV.
+
+-- COMMAND ----------
+
+-- MAGIC %md
 -- MAGIC After uploading the file use the below command to check where it is.
 
 -- COMMAND ----------
@@ -139,7 +148,7 @@ SHOW DATABASES
 
 -- COMMAND ----------
 
-CREATE DATABASE study_abdulaziza_db COMMENT 'This is a temporary database for the class' LOCATION '/dbfs/FileStore/abdulaziza_files'
+CREATE DATABASE IF NOT EXISTS study_abdulaziza_db COMMENT 'This is a temporary database for learning' LOCATION '/dbfs/FileStore/abdulaziza_files'
 
 -- COMMAND ----------
 
@@ -152,7 +161,8 @@ DESCRIBE DATABASE EXTENDED study_abdulaziza_db
 -- MAGIC 
 -- MAGIC #Using the above %python command we can run a Python cell in an SQL notebook. We will use this cell to save our CSV file to a delta table
 -- MAGIC 
--- MAGIC table = spark.read.csv("/FileStore/abdulaziza_files/flight_information_arrivals.csv", header="true", inferSchema="true")
+-- MAGIC file_path = "/FileStore/abdulaziza_files/Flight_Information_Arrivals.csv"
+-- MAGIC table = spark.read.csv(file_path, header="true", inferSchema="true")
 -- MAGIC 
 -- MAGIC #Here we will will store our database name and table name
 -- MAGIC db_and_tablename = 'study_abdulaziza_db.dxb_flight_arrivals'
@@ -192,7 +202,7 @@ DESCRIBE TABLE EXTENDED study_abdulaziza_db.dxb_flight_arrivals
 
 -- COMMAND ----------
 
-SELECT * FROM study_abdulaziza_db.dxb_flight_arrivals WHERE publicScheduledDateTime = '2020-03-18'
+SELECT * FROM study_abdulaziza_db.dxb_flight_arrivals WHERE publicScheduledDateTime = '2022-03-18'
 
 -- COMMAND ----------
 
@@ -201,17 +211,12 @@ SELECT * FROM study_abdulaziza_db.dxb_flight_arrivals WHERE publicScheduledDateT
 
 -- COMMAND ----------
 
-SELECT * FROM study_abdulaziza_db.dxb_flight_arrivals WHERE DATE(publicScheduledDateTime) = '2020-03-18'
+SELECT * FROM study_abdulaziza_db.dxb_flight_arrivals WHERE DATE(publicScheduledDateTime) = '2022-03-18'
 
 -- COMMAND ----------
 
 -- MAGIC %md
 -- MAGIC ## 3. More Things to Do with Tables
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC If we look at the `flightNumber` column, we can see that it includes the airline code then the flight code for that airline. Let's say for example we want the airline code as a column on it's own. let's name this column `airlineCode`. Let's also create a column for the flight code without the airline code called `flightNumber_without_airlineCode`. 
 
 -- COMMAND ----------
 
@@ -224,10 +229,6 @@ SELECT CAST(publicScheduledDateTime AS DATE) AS publicScheduledDate FROM study_a
 
 -- COMMAND ----------
 
--- How to add this column to the table?
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC Now, let's say we want to filter the table using multiple conditions. For example all flights from a specific country on a specific date range. This operation is also very useful when importing tables before transforming to Pandas, As it will take much less time to tranfsorm a smaller table to Pandas.
 
@@ -235,8 +236,30 @@ SELECT CAST(publicScheduledDateTime AS DATE) AS publicScheduledDate FROM study_a
 
 SELECT * 
 FROM study_abdulaziza_db.dxb_flight_arrivals 
-WHERE (DATE(publicScheduledDateTime) >= '2020-03-01' AND DATE(publicScheduledDateTime) <= '2020-05-01')
-  AND originName = 'Tokyo'
+WHERE (DATE(publicScheduledDateTime) >= '2022-03-01' AND DATE(publicScheduledDateTime) <= '2022-04-01')
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC We Don't need all these columns, let's filter to the columns we really need. This way we can also reorder the columns in any way we want.
+
+-- COMMAND ----------
+
+SELECT originName, publicScheduledDateTime, flightStatus, flightNumber, airlineName
+FROM study_abdulaziza_db.dxb_flight_arrivals 
+WHERE (DATE(publicScheduledDateTime) >= '2022-03-01' AND DATE(publicScheduledDateTime) <= '2022-04-01')
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC 
+-- MAGIC Now Let's look at all the flights from Tokyo
+
+-- COMMAND ----------
+
+SELECT originName, publicScheduledDateTime, flightStatus, flightNumber, airlineName
+FROM study_abdulaziza_db.dxb_flight_arrivals 
+WHERE originName = 'Tokyo'
 
 -- COMMAND ----------
 
@@ -245,10 +268,9 @@ WHERE (DATE(publicScheduledDateTime) >= '2020-03-01' AND DATE(publicScheduledDat
 
 -- COMMAND ----------
 
-SELECT * 
+SELECT originName, publicScheduledDateTime, flightStatus, flightNumber, airlineName
 FROM study_abdulaziza_db.dxb_flight_arrivals 
-WHERE (DATE(publicScheduledDateTime) >= '2020-03-01' AND DATE(publicScheduledDateTime) <= '2020-05-01')
-  AND originName LIKE '%Tokyo%'
+WHERE originName LIKE '%Tokyo%'
 
 -- COMMAND ----------
 
@@ -257,7 +279,7 @@ WHERE (DATE(publicScheduledDateTime) >= '2020-03-01' AND DATE(publicScheduledDat
 
 -- COMMAND ----------
 
-SELECT * 
+SELECT originName, publicScheduledDateTime, flightStatus, flightNumber, airlineName
 FROM study_abdulaziza_db.dxb_flight_arrivals 
 WHERE originName LIKE '%Tokyo%' 
   OR originName LIKE '%Narita%' 
@@ -270,7 +292,7 @@ WHERE originName LIKE '%Tokyo%'
 
 -- COMMAND ----------
 
-SELECT * 
+SELECT originName, publicScheduledDateTime, flightStatus, flightNumber, airlineName
 FROM study_abdulaziza_db.dxb_flight_arrivals 
 WHERE originName LIKE '%Tokyo%' 
   OR originName LIKE '%Narita%' 
@@ -280,21 +302,39 @@ ORDER BY originName ASC
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC We Don't need all these columns, let's filter to the columns we really need. This way we can also reorder the columns in any way we want.
--- MAGIC 
+-- MAGIC Now let's look at all flights between two specific dates from Tokyo!
+
+-- COMMAND ----------
+
+SELECT originName, publicScheduledDateTime, flightStatus, flightNumber, airlineName
+FROM study_abdulaziza_db.dxb_flight_arrivals 
+WHERE (DATE(publicScheduledDateTime) >= '2022-03-01' AND DATE(publicScheduledDateTime) <= '2022-05-01')
+  AND originName LIKE '%Tokyo%'
+
+-- COMMAND ----------
+
+-- MAGIC %md 
 -- MAGIC Here we can also see how we can combine multiple And and OR conditions in multiple columns.
 
 -- COMMAND ----------
 
 SELECT publicScheduledDateTime, originName, flightStatus, baggageClaimUnit
 FROM study_abdulaziza_db.dxb_flight_arrivals 
-WHERE (DATE(publicScheduledDateTime) >= '2020-01-01' AND DATE(publicScheduledDateTime) <= '2020-08-01')
+WHERE (DATE(publicScheduledDateTime) >= '2022-03-01' AND DATE(publicScheduledDateTime) <= '2022-04-01')
  AND (
   originName LIKE '%Tokyo%' 
   OR originName LIKE '%Narita%' 
   OR originName LIKE '%Haneda%'
   )
 ORDER BY originName ASC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ##### Challenge
+-- MAGIC If we look at the `flightNumber` column, we can see that it includes the airline code then the flight code for that airline. Let's say for example we want the airline code as a column on it's own. let's name this column `airlineCode`. Let's also create a column for the flight code without the airline code called `flightNumber_without_airlineCode`. 
+-- MAGIC 
+-- MAGIC See if you can use SQL to create a table with the above.
 
 -- COMMAND ----------
 
@@ -310,12 +350,18 @@ ORDER BY originName ASC
 
 SELECT publicScheduledDateTime, originName, flightStatus, baggageClaimUnit
 FROM study_abdulaziza_db.dxb_flight_arrivals 
+WHERE flightStatus = 'Arrived'
+
+-- COMMAND ----------
+
+SELECT publicScheduledDateTime, originName, flightStatus, baggageClaimUnit
+FROM study_abdulaziza_db.dxb_flight_arrivals 
 WHERE flightStatus = 'Cancelled'
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC We see a lot of canncelled flights in 2020 but what if we want to know the count?
+-- MAGIC We see a lot of canncelled flights in 2022 but what if we want to know the count?
 
 -- COMMAND ----------
 
@@ -328,14 +374,14 @@ WHERE flightStatus = 'Cancelled'
 -- MAGIC %md
 -- MAGIC Notice how we selected the count of one column but our filter condidtion is a different column? 
 -- MAGIC 
--- MAGIC Now let's do something intersting, let's look at how many flights were cancelled during the lockdown period. You can get the data here. https://en.wikipedia.org/wiki/COVID-19_lockdowns
+-- MAGIC Now let's do something intersting, let's look at how many flights were cancelled during a certain period. You can get the data here. https://en.wikipedia.org/wiki/COVID-19_lockdowns
 
 -- COMMAND ----------
 
 SELECT COUNT(publicScheduledDateTime)
 FROM study_abdulaziza_db.dxb_flight_arrivals 
 WHERE flightStatus = 'Cancelled'
-  AND (DATE(publicScheduledDateTime) >= '2020-03-26' AND DATE(publicScheduledDateTime) <= '2020-04-17')
+  AND (DATE(publicScheduledDateTime) >= '2022-03-26' AND DATE(publicScheduledDateTime) <= '2022-04-17')
 
 -- COMMAND ----------
 
@@ -362,11 +408,11 @@ GROUP BY flightStatus
 
 -- COMMAND ----------
 
---Now let's look at the count during lockdown
+--Now let's look at the count during our period
 
 SELECT flightStatus, COUNT(flightStatus)
 FROM study_abdulaziza_db.dxb_flight_arrivals 
-  WHERE (DATE(publicScheduledDateTime) >= '2020-03-26' AND DATE(publicScheduledDateTime) <= '2020-04-17')  
+  WHERE (DATE(publicScheduledDateTime) >= '2022-03-26' AND DATE(publicScheduledDateTime) <= '2022-04-17')  
 GROUP BY flightStatus
 
 -- COMMAND ----------
@@ -382,7 +428,16 @@ GROUP BY flightStatus
 -- MAGIC For example, let's find the baggleClaim sum from each location. This can be also used to estimate the number of passengers from each location!
 -- MAGIC 
 -- MAGIC Here we are using two columns instead of one. The column we want to aggregate `baggageClaimUnit`, the aggregation function `SUM` and the the column we want to aggregate our numerical column by `originName`
--- MAGIC 
+
+-- COMMAND ----------
+
+SELECT originName, SUM(baggageClaimUnit) as totalBagageClaim
+FROM study_abdulaziza_db.dxb_flight_arrivals 
+GROUP BY originName
+
+-- COMMAND ----------
+
+-- MAGIC %md
 -- MAGIC Finally, we can also sort our results from **highest to lowest** using `ORDER bY <column> DESC` and **lowest to highest** using `ORDER BY <column> ASC`
 
 -- COMMAND ----------
@@ -422,7 +477,7 @@ ORDER BY arrivedCount ASC
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC Remeber above where we counted the flight status counts? Well, what if we want to find that count and compare it to the count during the lockdown period?
+-- MAGIC Remeber above where we counted the flight status counts? Well, what if we want to find that count and compare it to the count during a specific period?
 
 -- COMMAND ----------
 
@@ -433,9 +488,9 @@ FROM(
   GROUP BY flightStatus
 ) AS a
 FULL OUTER JOIN(
-  SELECT  flightStatus, COUNT(flightStatus) as countDuringLockdown
+  SELECT  flightStatus, COUNT(flightStatus) as countDuringCustomPeriod
   FROM study_abdulaziza_db.dxb_flight_arrivals 
-    WHERE (DATE(publicScheduledDateTime) >= '2020-03-26' AND DATE(publicScheduledDateTime) <= '2020-04-17')  
+    WHERE (DATE(publicScheduledDateTime) >= '2022-03-26' AND DATE(publicScheduledDateTime) <= '2022-04-17')  
   GROUP BY flightStatus
 ) AS b
 ON a.flightStatus = b.flightStatus
@@ -445,7 +500,7 @@ ON a.flightStatus = b.flightStatus
 -- MAGIC %md
 -- MAGIC This is really helpful for analytics (and much easier to do with Pandas)
 -- MAGIC 
--- MAGIC We can even find the ratio between them. Also since the value for everything other than arrived and cancelled is null during lockdown, we can do an inner join instead.
+-- MAGIC We can even find the ratio between them. Also since the value for everything other than arrived and cancelled is mostly null during the custom period, we can do an inner join instead.
 
 -- COMMAND ----------
 
@@ -458,7 +513,7 @@ FROM(
 INNER JOIN(
   SELECT  flightStatus, COUNT(flightStatus) as countDuringLockdown
   FROM study_abdulaziza_db.dxb_flight_arrivals 
-    WHERE (DATE(publicScheduledDateTime) >= '2020-03-26' AND DATE(publicScheduledDateTime) <= '2020-04-17')  
+    WHERE (DATE(publicScheduledDateTime) >= '2022-03-26' AND DATE(publicScheduledDateTime) <= '2022-04-17')  
   GROUP BY flightStatus
 ) AS b
 ON a.flightStatus = b.flightStatus
@@ -478,6 +533,8 @@ ON a.flightStatus = b.flightStatus
 
 -- MAGIC %md
 -- MAGIC Finally, let's delete the table and database, as well as any files and folders.
+-- MAGIC 
+-- MAGIC ##### Be very careful when deleting data! As you can delete important files by mistake!
 
 -- COMMAND ----------
 
@@ -500,7 +557,3 @@ SHOW DATABASES
 
 -- MAGIC %sh
 -- MAGIC ls /dbfs/FileStore/
-
--- COMMAND ----------
-
-
